@@ -3,15 +3,15 @@ const swaggereJsdoc = require('swagger-jsdoc');
 
 const options = {
     swaggerDefinition: {
+        openapi: '3.0.0',
         info: {
             title: 'Test API',
             version: '1.0.0',
             description: 'Test API with express',
         },
-        host: 'localhost:3300',
-        basePath: '/'
+        servers: [{url:'http://52.79.214.156:3000/'}],
     },
-    apis: ['./routes/*.js', './swagger/*']
+    apis: ['./swagger/*']
 };
 
 const specs = swaggereJsdoc(options);

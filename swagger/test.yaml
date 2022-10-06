@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
+servers:
+  - url: http://52.79.214.156:3000/
+    description: Optional server description, e.g. Main (production) server
+paths:
+  /login:
+    tag: user.js
+    post:
+      summary: 로그인
+      description: 로그인 요청
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userid:         
+                  type: string
+                password:   
+                  type: string
+              required:
+                - userid
+                - password
+      responses:
+        '200':    
+          description: 로그인 성공
+        '400':
+          description: 로그인 실패
+        '401':
+          description: 잘못된 id or password
+  /join:
+    tag: user.js
+    post:
+      summary: 회원가입
+      description: 회원가입 요청
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userid:         
+                  type: string
+                password:   
+                  type: string
+              required:
+                - userid
+                - password
+      responses:
+        '201':    
+          description: 회원가입 성공
+          
+        '400':
+          description: 회원가입 실패
+  

@@ -1,9 +1,11 @@
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
+const http = require('http')
 const dotenv = require('dotenv')
-const passport = require('passport')
-const { swaggerUi, specs} = require('./swagger')
+const cookieParser = require('cookie-parser')
+const { swaggerUi, specs } = require('./swagger')
+
 
 dotenv.config({path:'./.env'})
 
@@ -12,11 +14,13 @@ const port = process.env.PORT || 3000
 
 const dbName = 'inha'
 
+app.use(cors())
 app.use(logger('dev'))
-app.use(express.json());
+app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-
+app.use(cookieParser())
 /**************************************************************************/
+
 app.use('/', require('./server/login'))
 
 /**************************************************************************/
