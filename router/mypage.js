@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../config/db')
 
 const router = express.Router()
-const auth = require('./auth')
+const {auth} = require('./auth')
     
 
 router.get('/mysong', auth, (req,res) => {
