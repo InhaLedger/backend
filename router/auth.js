@@ -4,16 +4,21 @@ require('dotenv').config({path:'../.env'})
 
 exports.auth = (req, res, next) => {
     try {
-        req.decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET)
+        req.decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET)
+        token = req.cookies.token
+        base64Payload = token.split('.')[1];
+        payload = Buffer.from(base64Payload, 'base64'); 
+        result = JSON.parse(payload.toString())
+        uidx = result['useridx']
         return next()
     }
     catch (err) {
         if (error.name === 'TokenExpiredError') {
             console.log('auth TokenExpiredError');
-            next();
+            return res.statusCode(400)
         }
         if (error.name === 'JsonWebTokenError') {
             console.log('JsonWebTokenError');
-            next()
+            return res.statusCode(400)
     }
 }

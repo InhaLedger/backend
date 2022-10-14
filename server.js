@@ -21,7 +21,8 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 /**************************************************************************/
 
-app.use('/', require('./server/login'))
+app.use('/', require('./router/login'))
+app.use('/', require('./router/mypage'))
 
 /**************************************************************************/
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

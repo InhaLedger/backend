@@ -6,9 +6,10 @@ info:
 servers:
   - url: http://52.79.214.156:3000/
     description: Optional server description, e.g. Main (production) server
+####################################################################################
 paths:
   /login:
-    tag: user.js
+    tag: login.js
     post:
       summary: 로그인
       description: 로그인 요청
@@ -33,8 +34,9 @@ paths:
           description: 로그인 실패
         '401':
           description: 잘못된 id or password
+####################################################################################
   /join:
-    tag: user.js
+    tag: login.js
     post:
       summary: 회원가입
       description: 회원가입 요청
@@ -58,4 +60,55 @@ paths:
           
         '400':
           description: 회원가입 실패
-  
+####################################################################################
+  /mysong:
+    tag: mypage.js
+    get:
+      summary: 내 추천노래 리스트 불러오기
+      description: db mysong -> song table
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userid:         
+                  type: string
+                password:   
+                  type: string
+              required:
+                - userid
+                - password
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+####################################################################################
+  /mynote:
+    tag: mypage.js
+    post:
+      summary: 내 음역대 등록
+      description: 음역대 등록
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                highNote:         
+                  type: string
+                lowNote:   
+                  type: string
+              required:
+                - highNote
+                - lowNote
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패

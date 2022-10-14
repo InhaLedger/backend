@@ -20,7 +20,7 @@ router.post('/login', (req,res) => {
                 return res.sendStatus(401)
             
             else if(userid == data[0].userid && (await bcrypt.compare(password, data[0].password))) {
-                const token = jwt.sign({userid: data[0].userid}, process.env.JWT_SECRET, {
+                const token = jwt.sign({useridx: data[0].useridx}, process.env.JWT_SECRET, {
                     expiresIn: process.env.JWT_EXPIRES_IN
                 })
                 console.log('Issued Token is '+token)
@@ -39,6 +39,7 @@ router.post('/login', (req,res) => {
     }
     catch (err) {
         console.log(error)
+        return res.sendStatus(400)
     }
 })
 
@@ -72,9 +73,5 @@ router.post('/join', (req,res) => {
     })
 })
 
-
-router.get('/logout', async (req,res) => {
-    // ??
-})
 
 module.exports = router
