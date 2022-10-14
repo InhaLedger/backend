@@ -6,6 +6,12 @@ info:
 servers:
   - url: http://52.79.214.156:3000/
     description: Optional server description, e.g. Main (production) server
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
 ####################################################################################
 paths:
   /login:
@@ -64,6 +70,8 @@ paths:
   /mysong:
     tag: mypage.js
     get:
+      security:
+        - cookieAuth: []
       summary: 내 추천노래 리스트 불러오기
       description: db mysong -> song table
       requestBody:
