@@ -9,9 +9,11 @@ servers:
 components:
   securitySchemes:
     cookieAuth:
-      type: apiKey
+      type: jwt
       in: cookie
       name: token
+security:
+  - cookieAuth: []
 ####################################################################################
 paths:
   /login:
