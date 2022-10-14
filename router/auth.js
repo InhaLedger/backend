@@ -20,5 +20,6 @@ exports.auth = (req, res, next) => {
         if (error.name === 'JsonWebTokenError') {
             console.log('JsonWebTokenError');
             return res.statusCode(400)
+        }
     }
 }
