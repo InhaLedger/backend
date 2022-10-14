@@ -13,7 +13,7 @@ router.get('/mysong', auth, (req,res) => {
             return res.sendStatus(400)
         
         songlist = []
-        for (i=0, i<data.length; i++){
+        for (i=0; i<data.length; i++){
             db.query('SELECT * FROM song WHERE no=?',[data[i]], (err2,data2 => {
                 if(err2)
                     return res.sendStatus(400)
