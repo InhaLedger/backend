@@ -10,16 +10,11 @@ exports.auth = (req, res, next) => {
         payload = Buffer.from(base64Payload, 'base64'); 
         result = JSON.parse(payload.toString())
         uidx = result['useridx']
+        console.log('auth passed')
         return next()
     }
     catch (err) {
-        if (error.name === 'TokenExpiredError') {
-            console.log('auth TokenExpiredError');
-            return res.statusCode(400)
-        }
-        if (error.name === 'JsonWebTokenError') {
-            console.log('JsonWebTokenError');
-            return res.statusCode(400)
-        }
+        console.log(err)
+        return res.sendStatus(401)
     }
 }

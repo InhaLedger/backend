@@ -8,20 +8,24 @@ const {auth} = require('./auth')
     
 
 router.get('/mysong', auth, (req,res) => {
-    db.query('SELECT mysong FROM cart WHERE useridx=?',[uidx], (err,data)=> {
-        if(err)
+    songlist = []
+    db.query('SELECT mysong FROM cart WHERE user=?',[uidx], (err,data)=> {
+        if(err){
+            console.log(err)
             return res.sendStatus(400)
-        
-        songlist = []
-        for (i=0;  i<data.length; i++){
-            db.query('SELECT * FROM song WHERE no=?',[data[i]], (err2,data2 => {
-                if(err2)
-                    return res.sendStatus(400)
-                songlist.push(data2)
-            }))
         }
-
-        return res.send(songlist)
+        for (var result of data){
+            db.query('SELECT * FROM song WHERE no=?',[result.mysong], (err2,data2) => {
+                if(err2){
+                    console.log(err2)
+                    return res.sendStatus(400)
+                }
+                processed = JSON.parse(JSON.stringify(data2))
+                songlist.push(processed[0])
+                
+                return res.status(200).json(songlist)
+            })
+        }
     })
     
 })
@@ -29,7 +33,10 @@ router.get('/mysong', auth, (req,res) => {
 
 
 router.post('/mynote', auth, (req,res) => {
-    const {high, low} = req.body
+    const high = req.body.highNote
+    const low = req.body.lowNote
+    console.log(high)
+    console.log(low)
     try {
         db.query('UPDATE user SET highNote=?, lowNote=? WHERE useridx=?',[high, low, uidx], async(err,data)=> {
             if(err)

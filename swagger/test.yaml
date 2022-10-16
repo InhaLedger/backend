@@ -1,24 +1,20 @@
-openapi: 3.0.0
-info:
-  title: Sample API
-  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
-  version: 0.1.9
-servers:
-  - url: http://52.79.214.156:3000/
-    description: Optional server description, e.g. Main (production) server
 components:
   securitySchemes:
-    cookieAuth:
-      type: jwt
+    cookieAuth:         # arbitrary name for the security scheme; will be used in the "security" key later
+      type: apiKey
       in: cookie
-      name: token
-security:
-  - cookieAuth: []
+      name: token  # cookie name
+tags:
+  - name: login.js
+    description: 로그인 관련
+  - name: mypage.js
+    description: 사용자 정보관련
 ####################################################################################
 paths:
   /login:
-    tag: login.js
     post:
+      tags: 
+        - login.js
       summary: 로그인
       description: 로그인 요청
       requestBody:
@@ -44,8 +40,9 @@ paths:
           description: 잘못된 id or password
 ####################################################################################
   /join:
-    tag: login.js
     post:
+      tags: 
+        - login.js
       summary: 회원가입
       description: 회원가입 요청
       requestBody:
@@ -70,8 +67,9 @@ paths:
           description: 회원가입 실패
 ####################################################################################
   /mysong:
-    tag: mypage.js
     get:
+      tags: 
+        - mypage.js
       security:
         - cookieAuth: []
       summary: 내 추천노래 리스트 불러오기
@@ -79,17 +77,19 @@ paths:
       responses:
         '200':    
           description: 성공
-          
         '400':
           description: 실패
+        '401':
+          description: 토큰 인증 실패
 ####################################################################################
   /mynote:
-    tag: mypage.js
     post:
+      tags: 
+        - mypage.js
       security:
         - cookieAuth: []
       summary: 내 음역대 등록
-      description: 음역대 등록
+      description: user table -> highNote, lowNote 등록
       requestBody:
         required: true
         content:
@@ -110,3 +110,22 @@ paths:
           
         '400':
           description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /mysearch:
+    get:
+      tags: 
+        - mypage.js
+      security:
+        - cookieAuth: []
+      summary: 내 음역대에 해당하는 노래 목록 (아직 미개발)
+      description: 아직 미정
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
