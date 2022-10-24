@@ -89,4 +89,37 @@ router.get('/mysearch', auth, async (req,res) => {
 })
 
 
+
+router.post('/deletemysong', auth, (req,res) => {
+    const mysong = req.body.no
+    try {
+        db.query('DELETE FROM cart WHERE useridx=? AND mysong=?',[uidx,mysong], async(err,data)=> {
+            if(err)
+                return res.sendStatus(400)
+            else
+                return res.sendStatus(200)
+        })
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
+
+router.post('/insertmysong', auth, (req,res) => {
+    const mysong = req.body.no
+    try {
+        db.query('INSERT INTO cart(user,mysong) VALUES(?,?)',[uidx,mysong], async(err,data)=> {
+            if(err)
+                return res.sendStatus(400)
+            else
+                return res.sendStatus(200)
+        })
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
+
 module.exports = router

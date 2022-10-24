@@ -128,6 +128,40 @@ paths:
         '401':
           description: 토큰 인증 실패
 ####################################################################################
+  /deletemysong:
+    post:
+      tags: 
+        - mypage.js
+      security:
+        - cookieAuth: []
+      summary: 장바구니에 노래 삭제
+      description: 장바구니에 노래 삭제
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /insertmysong:
+    post:
+      tags: 
+        - mypage.js
+      security:
+        - cookieAuth: []
+      summary: 장바구니에 노래 추가
+      description: 장바구니에 노래 추가
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
   /searchsong:
     get:
       tags: 
