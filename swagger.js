@@ -9,7 +9,7 @@ const options = {
             description: 'InhaCoin API',
             version: '0.1.9'
         },
-        servers: [{ url: 'http://52.79.214.156:3000/'}],
+        servers: [{ url: 'http://localhost:3000/'}],
     },
     apis: ['./swagger/*']
 };

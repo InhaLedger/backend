@@ -11,7 +11,7 @@ track_popularity =[]
 artist_id =[]
 track_id =[]
 for i in range(0,1000,50):
-    track_results = sp.search(q='artist:ed sh year:1980-2020', type='track', limit=50, offset=i)
+    track_results = sp.search(q='artist:허 year:1980-2020', type='album', limit=50, offset=i)
     for i, t in enumerate(track_results['tracks']['items']):
         artist_name.append(t['artists'][0]['name'])
         artist_id.append(t['artists'][0]['id'])

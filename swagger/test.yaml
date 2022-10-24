@@ -107,7 +107,6 @@ paths:
       responses:
         '200':    
           description: 성공
-          
         '400':
           description: 실패
         '401':
@@ -119,8 +118,24 @@ paths:
         - mypage.js
       security:
         - cookieAuth: []
-      summary: 내 음역대에 해당하는 노래 목록 (아직 미개발)
-      description: 아직 미정
+      summary: 내 음역대에 해당하는 노래 목록
+      description: 토큰으로 해당 id 최고음, 최저음 뽑아서 그 사이에 해당하는 노래 검색
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /searchsong:
+    get:
+      tags: 
+        - song.js
+      security:
+        - cookieAuth: []
+      summary: 노래 검색
+      description: 카테고리 - 
       responses:
         '200':    
           description: 성공

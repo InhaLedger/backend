@@ -4,7 +4,7 @@
   "description": "inhaledger",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon -e js,json,yaml server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
