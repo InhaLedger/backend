@@ -15,7 +15,6 @@ router.post('/login', (req,res) => {
         db.query('SELECT * FROM user WHERE userid=?',[userid], async(err,data)=> {
             if(err)
                 return res.sendStatus(400)
-
             if(data.length != 1)
                 return res.sendStatus(401)
             

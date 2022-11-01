@@ -23,6 +23,8 @@ app.use(cookieParser())
 
 app.use('/', require('./router/login'))
 app.use('/', require('./router/mypage'))
+app.use('/', require('./router/song'))
+app.use('/', require('./router/pack'))
 
 /**************************************************************************/
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

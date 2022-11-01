@@ -185,13 +185,49 @@ paths:
           description: 토큰 인증 실패
 ####################################################################################
   /searchsong:
-    get:
+    post:
       tags: 
         - song.js
       security:
         - cookieAuth: []
       summary: 노래 검색
       description: 카테고리 - 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:         
+                  type: string
+                singer:   
+                  type: string
+                fromdate:         
+                  type: string
+                todate:   
+                  type: string
+                highNote:         
+                  type: string
+                lowNote:   
+                  type: string
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /rank:
+    get:
+      tags: 
+        - song.js
+      security:
+        - cookieAuth: []
+      summary: 노래랭킹 top 100
+      description: 
       responses:
         '200':    
           description: 성공

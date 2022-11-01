@@ -97,7 +97,12 @@ router.post('/deletemysong', auth, (req,res) => {
             if(err)
                 return res.sendStatus(400)
             else
-                return res.sendStatus(200)
+                db.query('UPDATE song SET star = star - 1 WHERE no=?',[mysong], async(err2,data2) => {
+                    if(err2)
+                        return res.sendStatus(400)
+                    else
+                        return res.sendStatus(200)
+                })
         })
     }
     catch (err) {
@@ -113,7 +118,12 @@ router.post('/insertmysong', auth, (req,res) => {
             if(err)
                 return res.sendStatus(400)
             else
-                return res.sendStatus(200)
+                db.query('UPDATE song SET star = star + 1 WHERE no=?',[mysong], async(err2,data2) => {
+                    if(err2)
+                        return res.sendStatus(400)
+                    else
+                        return res.sendStatus(200)
+                })  
         })
     }
     catch (err) {
