@@ -24,6 +24,8 @@ router.post('/searchsong', auth, async (req,res) => {
         sqllist.push('title like \'%'+req.body.title+'%\'')
     if (req.body.singer!='')
         sqllist.push('singer like \'%'+req.body.singer+'%\'')
+    if (req.body.album!='')
+        sqllist.push('singer like \'%'+req.body.album+'%\'')
     if (req.body.fromdate!='')
         sqllist.push('date_format(song.release, \'%Y\') >='+req.body.fromdate)
     if (req.body.fromdate!='')

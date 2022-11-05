@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const db = require('../config/db')
 const util = require('util')
+const request = require('request')
+
 
 const router = express.Router()
 const {auth} = require('./auth')
@@ -131,5 +133,18 @@ router.post('/insertmysong', auth, (req,res) => {
         return res.sendStatus(400)
     }
 })
+
+
+router.get('/mywallet', auth, async (req,res) => {
+    try {
+        // on progress
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
+
+
 
 module.exports = router

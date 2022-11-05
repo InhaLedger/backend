@@ -9,6 +9,12 @@ tags:
     description: 로그인 관련
   - name: mypage.js
     description: 사용자 정보관련
+  - name: song.js
+    description: 노래 관련
+  - name: package.js
+    description: 패키지 게시판 관련
+  - name: noteboard.js
+    description: 음역대 추천 게시판 관련
 ####################################################################################
 paths:
   /login:
@@ -203,14 +209,18 @@ paths:
                   type: string
                 singer:   
                   type: string
+                album:   
+                  type: string
                 fromdate:         
                   type: string
                 todate:   
                   type: string
                 highNote:         
                   type: string
+                  description: EX) C1, C#1, D1 
                 lowNote:   
                   type: string
+                  description: EX) C1, C#1, D1 
       responses:
         '200':    
           description: 성공
@@ -236,3 +246,214 @@ paths:
           description: 실패
         '401':
           description: 토큰 인증 실패
+####################################################################################
+  /packboard:
+    get:
+      tags: 
+        - package.js
+      security:
+        - cookieAuth: []
+      summary: 패키지 모든 게시글
+      description: 
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /packread:
+    get:
+      tags: 
+        - package.js
+      security:
+        - cookieAuth: []
+      summary: 패키지 게시글 (게시글 idx로 식별)
+      description: 
+      parameters:
+        - in: query
+          name: packidx
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /packwrite:
+    post:
+      tags: 
+        - package.js
+      security:
+        - cookieAuth: []
+      summary: 패키지 추천 게시글 등록  (입력값 형식 반드시 지킬것!)
+      description: db에  ex) 1,2,3,4  로 저장
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:         
+                  type: string
+                content:   
+                  type: string
+                packlist:         
+                  type: string
+                  description: ex) 1,2,3,4
+              required:
+                - title
+                - content
+                - packlist                                  
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /packvote:
+    post:
+      tags: 
+        - package.js
+      security:
+        - cookieAuth: []
+      summary: 패키지 추천
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                packidx:         
+                  type: string
+              required:
+                - packidx                                
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '403':    
+          description: 이미 투표를 했음
+####################################################################################
+  /noteboard:
+    get:
+      tags: 
+        - noteboard.js
+      security:
+        - cookieAuth: []
+      summary: 노래 음역대 추천 모든 게시물
+      description: 
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /noteread:
+    get:
+      tags: 
+        - noteboard.js
+      security:
+        - cookieAuth: []
+      summary: 노래 음역대 추천 게시물 (게시물 idx로 식별)
+      description: 
+      parameters:
+        - in: query
+          name: noteidx
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /notewrite:
+    post:
+      tags: 
+        - noteboard.js
+      security:
+        - cookieAuth: []
+      summary: 음역대 추천 게시글 등록  (입력값 형식 반드시 지킬것!)
+      description: db에  ex) 1,2,3,4  로 저장
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                no:         
+                  type: string
+                title:         
+                  type: string
+                content:   
+                  type: string
+                highNote:   
+                  type: string
+                  description: ex) C1 C#1 D1
+                lowNote:   
+                  type: string
+                  description: ex) C1 C#1 D1
+              required:
+                - no
+                - title
+                - content
+                - highNote
+                - lowNote                                  
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /notevote:
+    post:
+      tags: 
+        - noteboard.js
+      security:
+        - cookieAuth: []
+      summary: 음역대 게시글 추천
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                noteidx:         
+                  type: string
+              required:
+                - noteidx                                
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '403':    
+          description: 이미 투표를 했음
