@@ -18,9 +18,9 @@ for (i=0; i<9; i++) {
 }
 
 
-router.get('/newboard', auth, async (req,res) => {
+router.get('/fixboard', auth, async (req,res) => {
     try {
-        data = await query2('SELECT * FROM newboard',[])
+        data = await query2('SELECT * FROM fixboard',[])
         return res.send(JSON.parse(JSON.stringify(data))).status(200)
     }
     catch (err) {
@@ -29,11 +29,11 @@ router.get('/newboard', auth, async (req,res) => {
     }
 })
 
-router.get('/newread', auth, async (req,res) => {
-    const new_idx = req.query.new_idx
+router.get('/fixread', auth, async (req,res) => {
+    const fix_idx = req.query.fix_idx
 
     try {
-        db.query('SELECT * FROM newboard WHERE new_idx=?',[new_idx], async(err,data)=> {
+        db.query('SELECT * FROM fixboard WHERE fix_idx=?',[fix_idx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)
@@ -48,7 +48,7 @@ router.get('/newread', auth, async (req,res) => {
     }
 })
 
-router.post('/newwrite', auth, async (req,res) => {
+router.post('/fixwrite', auth, async (req,res) => {
     const no = req.body.no
     const title = req.body.title
     const singer = req.body.singer
@@ -59,7 +59,7 @@ router.post('/newwrite', auth, async (req,res) => {
     const imageurl = req.body.imageurl
 
     try {
-        db.query('INSERT INTO newboard(new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?)',
+        db.query('INSERT INTO fixboard(fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?)',
         [uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
             if(err){
                 console.log(err)
@@ -80,7 +80,7 @@ router.post('/newwrite', auth, async (req,res) => {
 //     const noteidx = req.body.noteidx
 //     try {
 //             async function run(){
-//                 rawUser = await query2('SELECT voteusers FROM newboard WHERE noteidx=?',[noteidx])
+//                 rawUser = await query2('SELECT voteusers FROM fixboard WHERE noteidx=?',[noteidx])
 //                 isnull = false
 //                 if (rawUser[0]['voteusers'] == null){
 //                     rawUser[0]['voteusers'] = ''
@@ -95,7 +95,7 @@ router.post('/newwrite', auth, async (req,res) => {
 //                         newUser = rawUser[0]['voteusers']+','+uidx
 //                     else
 //                         newUser = uidx
-//                     update = await query2('UPDATE newboard SET vote=vote+1, voteusers=? WHERE noteidx=?',[newUser,noteidx])
+//                     update = await query2('UPDATE fixboard SET vote=vote+1, voteusers=? WHERE noteidx=?',[newUser,noteidx])
 //                     return res.sendStatus(200)
 //                 }
 //             }

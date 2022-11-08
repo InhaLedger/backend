@@ -326,7 +326,7 @@ paths:
         - package.js
       security:
         - bearerAuth: []
-      summary: 패키지 추천
+      summary: 패키지 추천 (보류...)
       description: 
       requestBody:
         required: true
@@ -394,7 +394,7 @@ paths:
       security:
         - bearerAuth: []
       summary: 음역대 추천 게시글 등록  (입력값 형식 반드시 지킬것!)
-      description: db에  ex) 1,2,3,4  로 저장
+      description: 
       requestBody:
         required: true
         content:
@@ -435,7 +435,7 @@ paths:
         - noteboard.js
       security:
         - bearerAuth: []
-      summary: 음역대 게시글 추천
+      summary: 음역대 게시글 추천  (보류...)
       description: 
       requestBody:
         required: true
@@ -448,6 +448,242 @@ paths:
                   type: string
               required:
                 - noteidx                                
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '403':    
+          description: 이미 투표를 했음
+####################################################################################
+  /newboard:
+    get:
+      tags: 
+        - newboard.js
+      security:
+        - bearerAuth: []
+      summary: 신곡 정보 게시판 모든 글
+      description: 
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /newread:
+    get:
+      tags: 
+        - newboard.js
+      security:
+        - bearerAuth: []
+      summary: 신곡 정보 게시판 글 읽기 (게시물 idx로 식별)
+      description: 
+      parameters:
+        - in: query
+          name: new_idx
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /newwrite:
+    post:
+      tags: 
+        - newboard.js
+      security:
+        - bearerAuth: []
+      summary: 신곡 정보 게시판 글 쓰기
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                no:         
+                  type: string
+                title:         
+                  type: string
+                singer:   
+                  type: string
+                composer:   
+                  type: string
+                lyricist:   
+                  type: string
+                releasedate:   
+                  type: string
+                  description: YYYY-MM-DD
+                album:   
+                  type: string
+                imageurl:   
+                  type: string
+              required:
+                - no
+                - title
+                - content
+                - singer
+                - composer 
+                - lyricist
+                - releasedate
+                - album
+                - imageurl                                 
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /newvote:
+    post:
+      tags: 
+        - newboard.js
+      security:
+        - bearerAuth: []
+      summary: 음역대 게시글 추천  (보류... )
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                noteidx:         
+                  type: string
+              required:
+                - newidx                                
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '403':    
+          description: 이미 투표를 했음
+####################################################################################
+  /fixboard:
+    get:
+      tags: 
+        - fixboard.js
+      security:
+        - bearerAuth: []
+      summary: 기존 곡 정보 게시판 모든 글
+      description: 
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /fixread:
+    get:
+      tags: 
+        - fixboard.js
+      security:
+        - bearerAuth: []
+      summary: 기존 곡 정보 게시판 글 읽기 (게시물 idx로 식별)
+      description: 
+      parameters:
+        - in: query
+          name: fix_idx
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /fixwrite:
+    post:
+      tags: 
+        - fixboard.js
+      security:
+        - bearerAuth: []
+      summary: 신곡 정보 게시판 글 쓰기
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                no:         
+                  type: string
+                title:         
+                  type: string
+                singer:   
+                  type: string
+                composer:   
+                  type: string
+                lyricist:   
+                  type: string
+                releasedate:   
+                  type: string
+                  description: YYYY-MM-DD
+                album:   
+                  type: string
+                imageurl:   
+                  type: string
+              required:
+                - no
+                - title
+                - content
+                - singer
+                - composer 
+                - lyricist
+                - releasedate
+                - album
+                - imageurl                                 
+      responses:
+        '200':    
+          description: 성공
+          
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
+  /fixvote:
+    post:
+      tags: 
+        - fixboard.js
+      security:
+        - bearerAuth: []
+      summary: 음역대 게시글 추천  (보류... )
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                noteidx:         
+                  type: string
+              required:
+                - newidx                                
       responses:
         '200':    
           description: 성공
