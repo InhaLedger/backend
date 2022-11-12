@@ -53,9 +53,8 @@ router.post('/mynote', auth, (req,res) => {
     const low = req.body.lowNote
     const highidx = Notelist.indexOf(high)
     const lowidx = Notelist.indexOf(low)
-
     try {
-        db.query('UPDATE user SET highNote=?, lowNote=? WHERE useridx=?',[high, low, uidx], async(err,data)=> {
+        db.query('UPDATE user SET highNote=?, lowNote=? WHERE useridx=?',[highidx, lowidx, uidx], async(err,data)=> {
             if(err)
                 return res.sendStatus(400)
             else
@@ -95,13 +94,17 @@ router.get('/mysearch', auth, async (req,res) => {
 router.post('/deletemysong', auth, (req,res) => {
     const mysong = req.body.no
     try {
-        db.query('DELETE FROM cart WHERE useridx=? AND mysong=?',[uidx,mysong], async(err,data)=> {
-            if(err)
+        db.query('DELETE FROM cart WHERE user=? AND mysong=?',[uidx,mysong], async(err,data)=> {
+            if(err){
+                console.log(err)
                 return res.sendStatus(400)
+            }
             else
                 db.query('UPDATE song SET star = star - 1 WHERE no=?',[mysong], async(err2,data2) => {
-                    if(err2)
+                    if(err2){
+                        console.log(err)
                         return res.sendStatus(400)
+                    }
                     else
                         return res.sendStatus(200)
                 })

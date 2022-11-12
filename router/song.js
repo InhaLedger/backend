@@ -59,7 +59,7 @@ router.post('/searchsong', auth, async (req,res) => {
 
 router.get('/rank', auth, async (req,res) => {
     try {
-        data = await query2('SELECT * FROM song order by star limit 100',[])
+        data = await query2('SELECT * FROM song order by star desc limit 100',[])
         return res.send(JSON.parse(JSON.stringify(data))).status(200)
     }
     catch (err) {
