@@ -30,10 +30,10 @@ router.get('/newboard', auth, async (req,res) => {
 })
 
 router.get('/newread', auth, async (req,res) => {
-    const new_idx = req.query.new_idx
+    const newidx = req.query.new_idx
 
     try {
-        db.query('SELECT * FROM newboard WHERE new_idx=?',[new_idx], async(err,data)=> {
+        db.query('SELECT * FROM newboard WHERE newidx=?',[newidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)
