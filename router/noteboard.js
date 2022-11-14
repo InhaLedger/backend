@@ -58,7 +58,7 @@ router.post('/notewrite', auth, async (req,res) => {
     const lowidx = Notelist.indexOf(low)
 
     try {
-        db.query('INSERT INTO noteboard(notewriter,notetitle,notecontent,noteno,highNote,lowNote) VALUES (?,?,?,?,?,?)',[uidx,title,content,no,highidx,lowidx], async(err,data)=> {
+        db.query('INSERT INTO noteboard(note_writer,note_title,note_content,note_no,highNote,lowNote) VALUES (?,?,?,?,?,?)',[uidx,title,content,no,highidx,lowidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)
