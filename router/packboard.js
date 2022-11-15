@@ -21,7 +21,7 @@ for (i=0; i<9; i++) {
 router.get('/packboard', auth, async (req,res) => {
     try {
         data = await query2('SELECT * FROM package',[])
-        return res.send(JSON.parse(JSON.stringify(data))).status(200)
+        return res.send(data).status(200)
     }
     catch (err) {
         console.log(err)
@@ -39,7 +39,7 @@ router.get('/packread', auth, async (req,res) => {
                 return res.sendStatus(400)
             }
             else
-                return res.send(JSON.parse(JSON.stringify(data))).status(200)
+                return res.send(data).status(200)
         })
     }
     catch (err) {
@@ -52,9 +52,10 @@ router.post('/packwrite', auth, async (req,res) => {
     const packlist = req.body.packlist
     const title = req.body.title
     const content = req.body.content
+    const packprice = req.body.packprice
 
     try {
-        db.query('INSERT INTO package(packwriter,packlist,packtitle,packcontent) VALUES (?,?,?,?)',[uidx,packlist,title,content], async(err,data)=> {
+        db.query('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',[uidx,packlist,title,content,packprice], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)

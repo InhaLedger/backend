@@ -205,6 +205,8 @@ paths:
             schema:
               type: object
               properties:
+                no:
+                  type: string
                 title:         
                   type: string
                 singer:   
@@ -292,7 +294,7 @@ paths:
       security:
         - bearerAuth: []
       summary: 패키지 추천 게시글 등록  (입력값 형식 반드시 지킬것!)
-      description: db에  ex) 1,2,3,4  로 저장
+      description: db에  ex) 다이나마이트-bts,hello-허각  로 저장
       requestBody:
         required: true
         content:
@@ -306,11 +308,15 @@ paths:
                   type: string
                 packlist:         
                   type: string
-                  description: ex) 1,2,3,4
+                  description: ex) 다이나마이트-bts,hello-허각
+                packprice:
+                  type: string
+                  description: ex) 500, 1000, 1500
               required:
                 - title
                 - content
                 - packlist                                  
+                - packprice
       responses:
         '200':    
           description: 성공
@@ -620,7 +626,7 @@ paths:
         - fixboard.js
       security:
         - bearerAuth: []
-      summary: 신곡 정보 게시판 글 쓰기
+      summary: 기존 곡 정보 게시판 글 쓰기
       description: 
       requestBody:
         required: true

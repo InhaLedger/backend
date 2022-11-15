@@ -25,18 +25,16 @@ router.get('/mysong', auth, async (req,res) => {
     try{
         async function run(){
             data = await query2('SELECT mysong FROM cart WHERE user=?',[uidx])
-            console.log(data)
             for (var result of data){
                 data2 = await query2('SELECT * FROM song WHERE no=?',[result.mysong])
-                processed = JSON.parse(JSON.stringify(data2))
-                songlist.push(processed[0])
-                //console.log(songlist)
+                for (i = 0; i<data2.length;i++){
+                    data2[i].highNote = Notelist[data2[i].highNote]
+                    data2[i].lowNote = Notelist[data2[i].lowNote]
+                    songlist.push(data2[i])
+                }
             }
-            console.log(songlist)
         }
         await run().then(function() {
-            console.log('--------------')
-            console.log(songlist)
             return res.status(200).send(songlist)
         })
     }
@@ -73,15 +71,19 @@ router.get('/mysearch', auth, async (req,res) => {
     low = 1000
     
     try {
+        songlist = []
         data = await query2('SELECT highNote, lowNote FROM user WHERE useridx=?',[uidx])
-        console.log('first finish')
         high = data[0].highNote
         low = data[0].lowNote
-        console.log(high,low)
 
-        data2 = await query2('SELECT * FROM song WHERE lowNote>=? AND highNote<=?',[low, high])
-        console.log('second finish')
-        return res.send(JSON.parse(JSON.stringify(data2))).status(200)
+        data2 = await query2('SELECT * FROM song WHERE lowNote>=? AND highNote<=? limit 100',[low, high])
+        for (i = 0; i<data2.length;i++){
+            data2[i].highNote = Notelist[data2[i].highNote]
+            data2[i].lowNote = Notelist[data2[i].lowNote]
+            songlist.push(data2[i])
+        }
+
+        return res.send(songlist).status(200)
     }
     catch (err) {
         console.log(err)

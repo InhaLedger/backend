@@ -20,6 +20,9 @@ for (i=0; i<9; i++) {
 
 router.post('/searchsong', auth, async (req,res) => {
     sqllist = []
+    
+    if (req.body.no!='')
+        sqllist.push('no = '+req.body.no)
     if (req.body.title!='')
         sqllist.push('title like \'%'+req.body.title+'%\'')
     if (req.body.singer!='')
@@ -42,10 +45,14 @@ router.post('/searchsong', auth, async (req,res) => {
         songlist=[]
         async function run(){
             data = await query2(sql,[])
-            songlist =  JSON.stringify(data)
-            console.log(typeof(songlist))
+            for (i = 0; i<data.length;i++){
+                data[i].highNote = Notelist[data[i].highNote]
+                data[i].lowNote = Notelist[data[i].lowNote]
+                songlist.push(data[i])
+            }
         }
         await run().then(function() {
+            
             return res.status(200).send(songlist)
         })
     }
@@ -59,8 +66,8 @@ router.post('/searchsong', auth, async (req,res) => {
 
 router.get('/rank', auth, async (req,res) => {
     try {
-        data = await query2('select (@rownum := @rownum+1) as rankidx,a.* from (select * from song order by star desc limit 100) as a, (select @rownum := 0 ) as b',[])
-        return res.send(JSON.parse(JSON.stringify(data))).status(200)
+        data = await query2('select s.*,IF (c.mysong=s.no, true, false) as alreadystar from (select (@rownum := @rownum+1) as rankidx,a.* from (select * from song order by star desc limit 100) as a, (select @rownum := 0 ) as b) as s left join (select * from cart where user=?) as c on s.no = c.mysong;',[uidx])
+        return res.send(data).status(200)
     }
     catch (err) {
         console.log(err)

@@ -20,8 +20,13 @@ for (i=0; i<9; i++) {
 
 router.get('/noteboard', auth, async (req,res) => {
     try {
-        data = await query2('SELECT * FROM noteboard',[])
-        return res.send(JSON.parse(JSON.stringify(data))).status(200)
+        data = await query2('select n.*,s.title,s.singer from noteboard as n left join (select * from song) as s on n.note_no = s.no;',[])
+        for (i = 0; i<data.length;i++){
+            data[i].highNote = Notelist[data[i].highNote]
+            data[i].lowNote = Notelist[data[i].lowNote]
+
+        }
+        return res.send(data).status(200)
     }
     catch (err) {
         console.log(err)
@@ -38,8 +43,13 @@ router.get('/noteread', auth, async (req,res) => {
                 console.log(err)
                 return res.sendStatus(400)
             }
-            else
-                return res.send(JSON.parse(JSON.stringify(data))).status(200)
+            else{
+                for (i = 0; i<data.length;i++){
+                    data[i].highNote = Notelist[data[i].highNote]
+                    data[i].lowNote = Notelist[data[i].lowNote]
+                }
+                return res.send(data).status(200)
+            }
         })
     }
     catch (err) {

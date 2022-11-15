@@ -21,7 +21,7 @@ for (i=0; i<9; i++) {
 router.get('/fixboard', auth, async (req,res) => {
     try {
         data = await query2('SELECT * FROM fixboard',[])
-        return res.send(JSON.parse(JSON.stringify(data))).status(200)
+        return res.send(data).status(200)
     }
     catch (err) {
         console.log(err)
@@ -39,7 +39,7 @@ router.get('/fixread', auth, async (req,res) => {
                 return res.sendStatus(400)
             }
             else
-                return res.send(JSON.parse(JSON.stringify(data))).status(200)
+                return res.send(data).status(200)
         })
     }
     catch (err) {
