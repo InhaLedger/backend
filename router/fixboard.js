@@ -20,7 +20,7 @@ for (i=0; i<9; i++) {
 
 router.get('/fixboard', auth, async (req,res) => {
     try {
-        data = await query2('SELECT * FROM fixboard',[])
+        data = await query2('select p.*,u.userid from fixboard as p left join user as u on p.fix_writer = u.useridx;',[])
         return res.send(data).status(200)
     }
     catch (err) {
@@ -30,10 +30,10 @@ router.get('/fixboard', auth, async (req,res) => {
 })
 
 router.get('/fixread', auth, async (req,res) => {
-    const fix_idx = req.query.fix_idx
+    const fixidx = req.query.fixidx
 
     try {
-        db.query('SELECT * FROM fixboard WHERE fix_idx=?',[fix_idx], async(err,data)=> {
+        db.query('select p.*,u.userid from (select * from fixboard where fixidx=?) as p left join user as u on p.fix_writer = u.useridx',[fixidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)
@@ -49,6 +49,9 @@ router.get('/fixread', auth, async (req,res) => {
 })
 
 router.post('/fixwrite', auth, async (req,res) => {
+    const board_title = req.body.board_title
+    const board_content = req.body.board_content
+
     const no = req.body.no
     const title = req.body.title
     const singer = req.body.singer
@@ -59,8 +62,8 @@ router.post('/fixwrite', auth, async (req,res) => {
     const imageurl = req.body.imageurl
 
     try {
-        db.query('INSERT INTO fixboard(fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?)',
-        [uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
+        db.query('INSERT INTO fixboard(fix_boardtitle, fix_boardcontent, fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)

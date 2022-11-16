@@ -88,6 +88,22 @@ paths:
         '401':
           description: 토큰 인증 실패
 ####################################################################################
+  /showmynote:
+    get:
+      tags: 
+        - mypage.js
+      security:
+        - bearerAuth: []
+      summary: 내 현재 음역대 
+      description:
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
   /mynote:
     post:
       tags: 
@@ -490,7 +506,7 @@ paths:
       description: 
       parameters:
         - in: query
-          name: new_idx
+          name: newidx
           schema:
             type: string
           required: true
@@ -517,9 +533,15 @@ paths:
             schema:
               type: object
               properties:
+                board_title:
+                  type: string
+                board_content:
+                  type: string
                 no:         
                   type: string
                 title:         
+                  type: string
+                content:         
                   type: string
                 singer:   
                   type: string
@@ -535,6 +557,8 @@ paths:
                 imageurl:   
                   type: string
               required:
+                - board_title
+                - board_content
                 - no
                 - title
                 - content
@@ -608,7 +632,7 @@ paths:
       description: 
       parameters:
         - in: query
-          name: fix_idx
+          name: fixidx
           schema:
             type: string
           required: true
@@ -635,9 +659,15 @@ paths:
             schema:
               type: object
               properties:
+                board_title:
+                  type: string
+                board_content:
+                  type: string
                 no:         
                   type: string
                 title:         
+                  type: string
+                content:         
                   type: string
                 singer:   
                   type: string
@@ -653,6 +683,8 @@ paths:
                 imageurl:   
                   type: string
               required:
+                - board_title
+                - board_content
                 - no
                 - title
                 - content
@@ -661,7 +693,7 @@ paths:
                 - lyricist
                 - releasedate
                 - album
-                - imageurl                                 
+                - imageurl                                  
       responses:
         '200':    
           description: 성공

@@ -20,7 +20,7 @@ for (i=0; i<9; i++) {
 
 router.get('/noteboard', auth, async (req,res) => {
     try {
-        data = await query2('select n.*,s.title,s.singer from noteboard as n left join (select * from song) as s on n.note_no = s.no;',[])
+        data = await query2('select n.*,s.title,s.singer from (select p.*,u.userid from noteboard as p left join user as u on p.note_writer = u.useridx) as n left join (select * from song) as s on n.note_no = s.no;',[])
         for (i = 0; i<data.length;i++){
             data[i].highNote = Notelist[data[i].highNote]
             data[i].lowNote = Notelist[data[i].lowNote]
@@ -38,7 +38,7 @@ router.get('/noteread', auth, async (req,res) => {
     const noteidx = req.query.noteidx
 
     try {
-        db.query('SELECT * FROM noteboard WHERE noteidx=?',[noteidx], async(err,data)=> {
+        db.query('select p.*,u.userid as writerid from (select * from noteboard where noteidx=?) as p left join user as u on p.note_writer = u.useridx',[noteidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)

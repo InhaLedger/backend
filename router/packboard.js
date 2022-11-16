@@ -20,7 +20,7 @@ for (i=0; i<9; i++) {
 
 router.get('/packboard', auth, async (req,res) => {
     try {
-        data = await query2('SELECT * FROM package',[])
+        data = await query2('select p.*,u.userid from package as p left join user as u on p.packwriter = u.useridx',[])
         return res.send(data).status(200)
     }
     catch (err) {
@@ -33,7 +33,7 @@ router.get('/packread', auth, async (req,res) => {
     const packidx = req.query.packidx
 
     try {
-        db.query('SELECT * FROM package WHERE packidx=?',[packidx], async(err,data)=> {
+        db.query('select p.*,u.userid as writerid from (select * from package where packidx=?) as p left join user as u on p.packwriter = u.useridx',[packidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)

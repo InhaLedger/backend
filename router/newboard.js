@@ -20,7 +20,7 @@ for (i=0; i<9; i++) {
 
 router.get('/newboard', auth, async (req,res) => {
     try {
-        data = await query2('SELECT * FROM newboard',[])
+        data = await query2('select p.*,u.userid from newboard as p left join user as u on p.new_writer = u.useridx;',[])
         return res.send(data).status(200)
     }
     catch (err) {
@@ -30,10 +30,10 @@ router.get('/newboard', auth, async (req,res) => {
 })
 
 router.get('/newread', auth, async (req,res) => {
-    const newidx = req.query.new_idx
+    const newidx = req.query.newidx
 
     try {
-        db.query('SELECT * FROM newboard WHERE newidx=?',[newidx], async(err,data)=> {
+        db.query('select p.*,u.userid from (select * from newboard where newidx=?) as p left join user as u on p.new_writer = u.useridx',[newidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)
@@ -49,6 +49,9 @@ router.get('/newread', auth, async (req,res) => {
 })
 
 router.post('/newwrite', auth, async (req,res) => {
+    const board_title = req.body.board_title
+    const board_content = req.body.board_content
+
     const no = req.body.no
     const title = req.body.title
     const singer = req.body.singer
@@ -59,8 +62,8 @@ router.post('/newwrite', auth, async (req,res) => {
     const imageurl = req.body.imageurl
 
     try {
-        db.query('INSERT INTO newboard(new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?)',
-        [uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
+        db.query('INSERT INTO newboard(new_boardtitle, new_boardcontent, new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)

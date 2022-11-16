@@ -44,7 +44,18 @@ router.get('/mysong', auth, async (req,res) => {
     }
 })
 
-
+router.get('/showmynote', auth, async (req,res) => {
+    try{
+        data = await query2('SELECT highNote,lowNote FROM user WHERE useridx=?',[uidx])
+        data[0].highNote = Notelist[data[0].highNote]
+        data[0].lowNote = Notelist[data[0].lowNote]
+        return res.status(200).send(data)
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
 
 router.post('/mynote', auth, (req,res) => {
     const high = req.body.highNote
