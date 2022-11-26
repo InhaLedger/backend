@@ -769,11 +769,42 @@ paths:
               properties:
                 receiverId:         
                   type: string
+                  description: userid(이메일)이 아닌 user index값
                 amounts:         
                   type: string
               required:
                 - receiverId
                 - amounts
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
+####################################################################################
+  /finduser:
+    post:
+      tags: 
+        - coin.js
+      security:
+        - bearerAuth: []
+      summary: 코인 송금 할때 받는사람의 user index를 찾을떄
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userid:         
+                  type: string
+                  description: userid(이메일)
+              required:
+                - userid
       responses:
         '200':    
           description: 성공

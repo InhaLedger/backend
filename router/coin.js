@@ -60,4 +60,16 @@ router.post('/issuecoin', auth, async (req,res) => {
     }
 })
 
+router.post('/finduser', auth, async (req,res) => {
+    try {
+        const {userid}  = req.body
+        data = await query2('SELECT useridx, userid FROM user WHERE userid like "\%'+userid+'\%"')
+        return res.send(data)
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
+
 module.exports = router
