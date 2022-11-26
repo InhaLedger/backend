@@ -2,8 +2,12 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const db = require('../config/db')
+const util = require('util')
+const axios = require('axios')
 
 const router = express.Router()
+const query2 = util.promisify(db.query).bind(db)
+
 
     
 router.post('/login', (req,res) => {
@@ -43,33 +47,37 @@ router.post('/login', (req,res) => {
 })
 
 
-router.post('/join', (req,res) => {
+router.post('/join', async (req,res) => {
     const { userid, password } = req.body
     if(!userid || !password ){
         return res.sendStatus(400)
     }
     
-    db.query('SELECT * FROM user WHERE userid=?', [userid], (err,data) => {
-        if(err) {
-            console.log(err)
+    try {
+        check_dup = await query2('SELECT * FROM user WHERE userid=?', [userid])
+
+        if(check_dup.length != 0){
             return res.sendStatus(400)
         }
-        
-        if(data.length != 0){
-            return res.sendStatus(400)
-        }
-        bcrypt.hash(password, 8, (err,encPassword) => {
-            console.log(`encPassword : ${encPassword}`)
-            db.query('INSERT INTO user(userid,password) VALUES(?,?)', [userid,encPassword], (err, data) => {
-                if(err){
-                    return res.sendStatus(400)
-                }
-                else{
-                    return res.sendStatus(201)
-                }
-            })
+
+        bcrypt.hash(password, 8, async (err,encPassword) => {
+            await query2('INSERT INTO user(userid,password) VALUES(?,?)', [userid,encPassword])
+
+            uidx = await query2('SELECT useridx FROM user WHERE userid = ?',[userid])
+            postdata = {"orgId":"Org1", "userId":uidx[0]['useridx']}
+            const response = await axios.post("http://211.226.199.46/users", postdata)
+            console.log(response)
+            if (response.status == 204)
+                return res.sendStatus(201)
+            else
+                return res.sendStatus(500)
         })
-    })
+    
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
 })
 
 

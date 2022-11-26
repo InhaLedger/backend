@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../config/db')
 const util = require('util')
 const request = require('request')
+const axios = require('axios')
 
 
 const router = express.Router()
@@ -151,9 +152,15 @@ router.post('/insertmysong', auth, (req,res) => {
 })
 
 
-router.get('/mywallet', auth, async (req,res) => {
+router.get('/mycoin', auth, async (req,res) => {
     try {
-        // on progress
+        console.log("http://211.226.199.46/users/Org1/"+uidx+"/account")
+        const response = await axios.get("http://211.226.199.46/users/Org1/"+uidx+"/account")
+        if (response.status == 200){
+            return res.send(response.data)
+        }
+        else
+            return res.sendStatus(500)
     }
     catch (err) {
         console.log(err)

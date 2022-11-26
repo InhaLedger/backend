@@ -49,7 +49,7 @@ paths:
     post:
       tags: 
         - login.js
-      summary: 회원가입
+      summary: 회원가입 / (내부코드에 코인기능 추가됨)
       description: 회원가입 요청
       requestBody:
         required: true
@@ -71,6 +71,8 @@ paths:
           
         '400':
           description: 회원가입 실패
+        '500':
+          description: 블록체인 오류
 ####################################################################################
   /mysong:
     get:
@@ -87,6 +89,24 @@ paths:
           description: 실패
         '401':
           description: 토큰 인증 실패
+####################################################################################
+  /mycoin:
+    get:
+      tags: 
+        - mypage.js
+      security:
+        - bearerAuth: []
+      summary: 내 보유 코인 (총 / 현재 교환 가능 / 담보)  / (내부코드에 코인기능 추가됨)
+      description:
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
 ####################################################################################
   /showmynote:
     get:
@@ -731,3 +751,35 @@ paths:
           description: 토큰 인증 실패
         '403':    
           description: 이미 투표를 했음
+####################################################################################
+  /sendcoin:
+    post:
+      tags: 
+        - coin.js
+      security:
+        - bearerAuth: []
+      summary: 코인 송금 (코드는 맞는거 같은데 보유코인이 0이라 미작동)
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                receiverId:         
+                  type: string
+                amounts:         
+                  type: string
+              required:
+                - receiverId
+                - amounts
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류

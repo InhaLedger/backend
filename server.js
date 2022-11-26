@@ -28,6 +28,7 @@ app.use('/', require('./router/packboard'))
 app.use('/', require('./router/noteboard'))
 app.use('/', require('./router/newboard'))
 app.use('/', require('./router/fixboard'))
+app.use('/', require('./router/coin'))
 /**************************************************************************/
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
