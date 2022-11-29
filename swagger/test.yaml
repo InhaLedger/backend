@@ -258,7 +258,10 @@ paths:
                   description: EX) C1, C#1, D1 
                 lowNote:   
                   type: string
-                  description: EX) C1, C#1, D1 
+                  description: EX) C1, C#1, D1
+                offset:
+                  type: string
+                  description: default = 0
       responses:
         '200':    
           description: 성공

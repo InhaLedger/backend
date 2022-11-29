@@ -38,8 +38,8 @@ router.post('/searchsong', auth, async (req,res) => {
         sqllist.push('highNote<='+Notelist.indexOf(req.body.highNote))
     if (req.body.lowNote!='')
         sqllist.push('lowNote>='+Notelist.indexOf(req.body.lowNote))
-
-    const sql = 'SELECT * FROM song where '+sqllist.join(' and ')
+    song_offset = parseInt(req.body.offset)*15 || 0
+    const sql = 'SELECT * FROM song where '+sqllist.join(' and ') +' limit ' + song_offset +', 15'
     console.log(sql)
     try{
         songlist=[]
