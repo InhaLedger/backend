@@ -371,7 +371,7 @@ paths:
         - package.js
       security:
         - bearerAuth: []
-      summary: 패키지 추천 (보류...)
+      summary: 패키지 추천 
       description: 
       requestBody:
         required: true
@@ -480,7 +480,7 @@ paths:
         - noteboard.js
       security:
         - bearerAuth: []
-      summary: 음역대 게시글 추천  (보류...)
+      summary: 음역대 게시글 추천
       description: 
       requestBody:
         required: true
@@ -606,7 +606,7 @@ paths:
         - newboard.js
       security:
         - bearerAuth: []
-      summary: 음역대 게시글 추천  (보류... )
+      summary: 음역대 게시글 추천 
       description: 
       requestBody:
         required: true
@@ -732,7 +732,7 @@ paths:
         - fixboard.js
       security:
         - bearerAuth: []
-      summary: 음역대 게시글 추천  (보류... )
+      summary: 음역대 게시글 추천
       description: 
       requestBody:
         required: true
