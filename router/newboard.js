@@ -22,7 +22,7 @@ router.get('/newboard', auth, async (req,res) => {
     try {
         data = await query2(`select p.*,u.userid,v.sum_vote from newboard as p 
         left join user as u on p.new_writer = u.useridx
-        left join (select boardidx,count(*) as sum_vote from votetable where boardtype='new' group by boardidx) as v on v.boardidx = p.newidx`,[])
+        left join (select boardidx,count(*) as vote from votetable where boardtype='new' group by boardidx) as v on v.boardidx = p.newidx`,[])
         return res.send(data).status(200)
     }
     catch (err) {
