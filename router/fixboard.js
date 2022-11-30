@@ -79,40 +79,17 @@ router.post('/fixwrite', auth, async (req,res) => {
 })
 
 
-// router.post('/newvote', auth, async (req,res) => {
-//     const noteidx = req.body.noteidx
-//     try {
-//             async function run(){
-//                 rawUser = await query2('SELECT voteusers FROM fixboard WHERE noteidx=?',[noteidx])
-//                 isnull = false
-//                 if (rawUser[0]['voteusers'] == null){
-//                     rawUser[0]['voteusers'] = ''
-//                     isnull = true
-//                 }
-//                 listUser = rawUser[0]['voteusers'].split(',')
-//                 uidx = uidx.toString()
-//                 if (listUser.indexOf(uidx) != -1)
-//                     return res.sendStatus(403)
-//                 else{
-//                     if (!isnull)
-//                         newUser = rawUser[0]['voteusers']+','+uidx
-//                     else
-//                         newUser = uidx
-//                     update = await query2('UPDATE fixboard SET vote=vote+1, voteusers=? WHERE noteidx=?',[newUser,noteidx])
-//                     return res.sendStatus(200)
-//                 }
-//             }
-//         await run()
-//     }
-//     catch (err) {
-//         console.log(err)
-//         return res.sendStatus(400)
-//     }
-// })
+router.post('/newvote', auth, async (req,res) => {
+    const fixidx = req.body.fixidx
+    try {
+        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'fix',fixidx])
 
-
-
-
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
 
 
 module.exports = router

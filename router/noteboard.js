@@ -87,37 +87,14 @@ router.post('/notewrite', auth, async (req,res) => {
 router.post('/notevote', auth, async (req,res) => {
     const noteidx = req.body.noteidx
     try {
-            async function run(){
-                rawUser = await query2('SELECT voteusers FROM noteboard WHERE noteidx=?',[noteidx])
-                isnull = false
-                if (rawUser[0]['voteusers'] == null){
-                    rawUser[0]['voteusers'] = ''
-                    isnull = true
-                }
-                listUser = rawUser[0]['voteusers'].split(',')
-                uidx = uidx.toString()
-                if (listUser.indexOf(uidx) != -1)
-                    return res.sendStatus(403)
-                else{
-                    if (!isnull)
-                        newUser = rawUser[0]['voteusers']+','+uidx
-                    else
-                        newUser = uidx
-                    update = await query2('UPDATE noteboard SET vote=vote+1, voteusers=? WHERE noteidx=?',[newUser,noteidx])
-                    return res.sendStatus(200)
-                }
-            }
-        await run()
+        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'note',noteidx])
+
     }
     catch (err) {
         console.log(err)
         return res.sendStatus(400)
     }
 })
-
-
-
-
 
 
 module.exports = router

@@ -74,23 +74,8 @@ router.post('/packwrite', auth, async (req,res) => {
 router.post('/packvote', auth, async (req,res) => {
     const packidx = req.body.packidx
     try {
-            async function run(){
-                rawUser = await query2('SELECT voteusers FROM package WHERE packidx=?',[packidx])
+        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'pack',packidx])
 
-                if (rawUser[0]['voteusers'] == null)
-                    rawUser[0]['voteusers'] = ''
-
-                listUser = rawUser[0]['voteusers'].split(',')
-                uidx = uidx.toString()
-                if (listUser.indexOf(uidx) != -1)
-                    return res.sendStatus(403)
-                else{
-                    newUser = rawUser[0]['voteusers']+','+uidx
-                    update = await query2('UPDATE package SET vote=vote+1, voteusers=? WHERE packidx=?',[newUser,packidx])
-                    return res.sendStatus(200)
-                }
-            }
-        await run()
     }
     catch (err) {
         console.log(err)
