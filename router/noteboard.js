@@ -20,11 +20,13 @@ for (i=0; i<9; i++) {
 
 router.get('/noteboard', auth, async (req,res) => {
     try {
-        data = await query2('select n.*,s.title,s.singer from (select p.*,u.userid from noteboard as p left join user as u on p.note_writer = u.useridx) as n left join (select * from song) as s on n.note_no = s.no;',[])
+        data = await query2(`select n.*,s.title,s.singer,v.sum_vote from (select p.*,u.userid from noteboard as p left join user as u on p.note_writer = u.useridx) as n 
+        left join (select * from song) as s on n.note_no = s.no
+        left join (select boardidx,count(*) as sum_vote from votetable where boardtype='note' group by boardidx) as v on v.boardidx = n.noteidx`,[])
+
         for (i = 0; i<data.length;i++){
             data[i].highNote = Notelist[data[i].highNote]
             data[i].lowNote = Notelist[data[i].lowNote]
-
         }
         return res.send(data).status(200)
     }
@@ -88,7 +90,7 @@ router.post('/notevote', auth, async (req,res) => {
     const noteidx = req.body.noteidx
     try {
         do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'note',noteidx])
-
+        return res.sendStatus(200)
     }
     catch (err) {
         console.log(err)

@@ -21,6 +21,9 @@ for (i=0; i<9; i++) {
 router.get('/packboard', auth, async (req,res) => {
     try {
         data = await query2('select p.*,u.userid from package as p left join user as u on p.packwriter = u.useridx',[])
+        data = await query2(`select p.*,u.userid,v.sum_vote from package as p 
+        left join user as u on p.packwriter = u.useridx
+        left join (select boardidx,count(*) as sum_vote from votetable where boardtype='pack' group by boardidx) as v on v.boardidx = p.packidx`,[])
         return res.send(data).status(200)
     }
     catch (err) {
@@ -75,6 +78,7 @@ router.post('/packvote', auth, async (req,res) => {
     const packidx = req.body.packidx
     try {
         do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'pack',packidx])
+        return res.sendStatus(200)
 
     }
     catch (err) {

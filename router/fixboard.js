@@ -20,7 +20,9 @@ for (i=0; i<9; i++) {
 
 router.get('/fixboard', auth, async (req,res) => {
     try {
-        data = await query2('select p.*,u.userid from fixboard as p left join user as u on p.fix_writer = u.useridx;',[])
+        data = await query2(`select p.*,u.userid,v.sum_vote from fixboard as p 
+        left join user as u on p.fix_writer = u.useridx
+        left join (select boardidx,count(*) as sum_vote from votetable where boardtype='fix' group by boardidx) as v on v.boardidx = p.fixidx`,[])
         return res.send(data).status(200)
     }
     catch (err) {
@@ -83,7 +85,7 @@ router.post('/newvote', auth, async (req,res) => {
     const fixidx = req.body.fixidx
     try {
         do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'fix',fixidx])
-
+        return res.sendStatus(200)
     }
     catch (err) {
         console.log(err)
