@@ -606,7 +606,7 @@ paths:
         - newboard.js
       security:
         - bearerAuth: []
-      summary: 음역대 게시글 추천 
+      summary: 새로운 노래정보 게시글 추천 
       description: 
       requestBody:
         required: true
@@ -615,7 +615,7 @@ paths:
             schema:
               type: object
               properties:
-                noteidx:         
+                newidx:         
                   type: string
               required:
                 - newidx                                
@@ -732,7 +732,7 @@ paths:
         - fixboard.js
       security:
         - bearerAuth: []
-      summary: 음역대 게시글 추천
+      summary: 노래정보 수정 게시글 추천
       description: 
       requestBody:
         required: true
@@ -741,7 +741,7 @@ paths:
             schema:
               type: object
               properties:
-                noteidx:         
+                fixidx:         
                   type: string
               required:
                 - newidx                                
