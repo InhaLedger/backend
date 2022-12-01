@@ -20,9 +20,10 @@ for (i=0; i<9; i++) {
 
 router.get('/fixboard', auth, async (req,res) => {
     try {
-        data = await query2(`select p.*,u.userid,v.sum_vote from fixboard as p 
+        data = await query2(`select p.*,u.userid,v.vote,vtable.already_vote from fixboard as p 
         left join user as u on p.fix_writer = u.useridx
-        left join (select boardidx,count(*) as vote from votetable where boardtype='fix' group by boardidx) as v on v.boardidx = p.fixidx`,[])
+        left join (select boardidx,count(*) as vote from votetable where boardtype='fix' group by boardidx) as v on v.boardidx = p.fixidx
+        left join (select boardidx,if(count(voteidx)!=0,true,false) as already_vote from votetable where boardtype='fix' and voter=? group by boardidx) as vtable on vtable.boardidx = p.fixidx`,[uidx])
         return res.send(data).status(200)
     }
     catch (err) {
