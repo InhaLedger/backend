@@ -65,15 +65,21 @@ router.post('/newwrite', auth, async (req,res) => {
     const imageurl = req.body.imageurl
 
     try {
-        db.query('INSERT INTO newboard(new_boardtitle, new_boardcontent, new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
-            if(err){
-                console.log(err)
-                return res.sendStatus(400)
-            }
-            else
-                return res.sendStatus(200)
-        })
+        topidx = await query2('SELECT newdix FROM newboard ORDER BY 1 DESC LIMIT 1',[])
+        const newidx = parseInt(topidx[0]['newidx']) + 1
+
+        const doWrite = await query2('INSERT INTO newboard(new_boardtitle, new_boardcontent, new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])
+
+        postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"newboard" }
+        const response = await axios.post("http://211.226.199.46/proposals",postdata)
+
+        if (response.status == 200) {
+            const writeid = await query2('UPDATE newboard SET new_proposalid=? WHERE newidx=?',[response.data.id, newidx])
+            return res.sendStatus(201)
+        }
+        else
+            return res.sendStatus(500)
     }
     catch (err) {
         console.log(err)
