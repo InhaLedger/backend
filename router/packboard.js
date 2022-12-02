@@ -58,14 +58,16 @@ router.post('/packwrite', auth, async (req,res) => {
     const packprice = req.body.packprice
 
     try {
-        db.query('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',[uidx,packlist,title,content,packprice], async(err,data)=> {
-            if(err){
-                console.log(err)
-                return res.sendStatus(400)
-            }
-            else
-                return res.sendStatus(200)
-        })
+        doWrite = query2('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',
+        [uidx,packlist,title,content,packprice])
+        
+        postdata = { "userid":uidx, "timestamp":Date.now() ,"type":"packboard" }
+        const response = await axios.post("http://211.226.199.46/proposals",postdata)
+
+        if (response.status == 200)
+            return res.sendStatus(201)
+        else
+            return res.sendStatus(500)
     }
     catch (err) {
         console.log(err)

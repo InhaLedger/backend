@@ -16,7 +16,26 @@ router.post('/sendcoin', auth, async (req,res) => {
         postdata = {"senderId":uidx, "senderOrg":"Org1", "receiverId":receiverId, "amounts":amounts}
         const response = await axios.post("http://211.226.199.46/coins", postdata)
         
-        if (response.status == 204)
+        if (response.status == 200)
+            return res.sendStatus(201)
+        else
+            return res.sendStatus(500)
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
+
+router.post('/adminSendcoin', auth, async (req,res) => {
+    if (admin == 0)
+        return res.sendStatus(401)
+    try {
+        const {receiverId, amounts}  = req.body
+        postdata = {"senderId":"admin", "senderOrg":"Org1", "receiverId":receiverId, "amounts":amounts}
+        const response = await axios.post("http://211.226.199.46/coins", postdata)
+        
+        if (response.status == 200)
             return res.sendStatus(201)
         else
             return res.sendStatus(500)
@@ -28,6 +47,8 @@ router.post('/sendcoin', auth, async (req,res) => {
 })
 
 router.post('/blockuser', auth, async (req,res) => {
+    if (admin == 0)
+        return res.sendStatus(401)
     try {
         const {userid}  = req.body
         const response = await axios.delete("http://211.226.199.46/users/Org1/"+userid)
@@ -44,6 +65,8 @@ router.post('/blockuser', auth, async (req,res) => {
 })
 
 router.post('/issuecoin', auth, async (req,res) => {
+    if (admin == 0)
+        return res.sendStatus(401)
     try {
         const {amounts}  = req.body
         postdata = {"amounts":amounts}
@@ -59,6 +82,28 @@ router.post('/issuecoin', auth, async (req,res) => {
         return res.sendStatus(400)
     }
 })
+
+
+router.post('/finalize', auth, async (req,res) => {
+    if (admin == 0)
+        return res.sendStatus(401)
+    // try {
+    //     const {amounts}  = req.body
+    //     postdata = {"amounts":amounts}
+    //     const response = await axios.post("http://211.226.199.46/coins/new", postdata)
+        
+    //     if (response.status == 204)
+    //         return res.sendStatus(201)
+    //     else
+    //         return res.sendStatus(500)
+    // }
+    // catch (err) {
+    //     console.log(err)
+    //     return res.sendStatus(400)
+    // }
+})
+
+
 
 router.post('/finduser', auth, async (req,res) => {
     try {

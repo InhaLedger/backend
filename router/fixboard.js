@@ -6,6 +6,7 @@ const util = require('util')
 
 const router = express.Router()
 const {auth} = require('./auth')
+const { default: axios } = require('axios')
 const query2 = util.promisify(db.query).bind(db)
 
 const Note = [ 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
@@ -65,15 +66,21 @@ router.post('/fixwrite', auth, async (req,res) => {
     const imageurl = req.body.imageurl
 
     try {
-        db.query('INSERT INTO fixboard(fix_boardtitle, fix_boardcontent, fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl], async(err,data)=> {
-            if(err){
-                console.log(err)
-                return res.sendStatus(400)
-            }
-            else
-                return res.sendStatus(200)
-        })
+        topidx = await query2('SELECT fixidx FROM fixboard ORDER BY 1 DESC LIMIT 1',[])
+        const fixidx = parseInt(topidx[0]['fixidx']) + 1
+
+        const doWrite = await query2('INSERT INTO fixboard(fix_boardtitle, fix_boardcontent, fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])
+        
+        postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"fixboard" }
+        const response = await axios.post("http://211.226.199.46/proposals",postdata)
+
+        if (response.status == 200) {
+            const writeid = await query2('UPDATE fixboard SET fix_proposalid=? WHERE fixidx=?',[response.data.id, fixidx])
+            return res.sendStatus(201)
+        }
+        else
+            return res.sendStatus(500)
     }
     catch (err) {
         console.log(err)

@@ -20,6 +20,9 @@ exports.auth = (req, res, next) => {
         result = JSON.parse(payload.toString())
         uidx = result['useridx']
         console.log('auth passed')
+        admin = result['isAdmin'] == '1' ? true : false
+        if (admin)
+            console.log('admin passed')
         return next()
     }
     catch (err) {

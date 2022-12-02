@@ -23,7 +23,8 @@ router.post('/login', (req,res) => {
                 return res.sendStatus(401)
             
             else if(userid == data[0].userid && (await bcrypt.compare(password, data[0].password))) {
-                const token = jwt.sign({useridx: data[0].useridx}, process.env.JWT_SECRET, {
+                const isAdmin = data[0].userid=='admin' ? 1 : 0
+                const token = jwt.sign({"useridx": data[0].useridx,"isAdmin":isAdmin}, process.env.JWT_SECRET, {
                     expiresIn: process.env.JWT_EXPIRES_IN
                 })
                 console.log('Issued Token is '+token)
