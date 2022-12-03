@@ -104,6 +104,7 @@ router.get('/admin_proposal', auth, async (req,res) => {
     }
 })
 
+
 router.post('/admin_finalize', auth, async (req,res) => {
     if (admin == 0)
         return res.sendStatus(401)
