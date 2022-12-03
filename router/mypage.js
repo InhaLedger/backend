@@ -154,7 +154,6 @@ router.post('/insertmysong', auth, (req,res) => {
 
 router.get('/mycoin', auth, async (req,res) => {
     try {
-        console.log("http://211.226.199.46/users/Org1/"+uidx+"/account")
         const response = await axios.get("http://211.226.199.46/users/Org1/"+uidx+"/account")
         if (response.status == 200){
             return res.send(response.data)

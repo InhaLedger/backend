@@ -849,3 +849,129 @@ paths:
           description: 토큰 인증 실패
         '500':
           description: 블록체인 오류
+####################################################################################
+  /admin_mycoin:
+    get:
+      tags: 
+        - admin.js
+      security:
+        - bearerAuth: []
+      summary: admin 코인 조회
+      description: 
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
+####################################################################################
+  /admin_sendcoin:
+    post:
+      tags: 
+        - admin.js
+      security:
+        - bearerAuth: []
+      summary: admin이 user에게 코인전송
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                receiverId:         
+                  type: string
+                amounts:         
+                  type: string
+              required:
+                - receiverId
+                - amounts
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
+####################################################################################
+  /admin_blockuser:
+    post:
+      tags: 
+        - admin.js
+      security:
+        - bearerAuth: []
+      summary: 사용자의 활동 정지시키기
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userid:         
+                  type: string
+              required:
+                - userid
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
+####################################################################################
+  /admin_issuecoin:
+    post:
+      tags: 
+        - admin.js
+      security:
+        - bearerAuth: []
+      summary: 관리자가 코인 발행하기
+      description: 
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                amounts:         
+                  type: string
+              required:
+                - amounts
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
+####################################################################################
+  /admin_proposal:
+    get:
+      tags: 
+        - admin.js
+      security:
+        - bearerAuth: []
+      summary: 모든 proposal 조회
+      description: 
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+        '500':
+          description: 블록체인 오류
