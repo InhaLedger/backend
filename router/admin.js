@@ -79,8 +79,8 @@ router.post('/admin_issuecoin', auth, async (req,res) => {
         postdata = {"amounts":amounts}
         const response = await axios.post("http://211.226.199.46/coins/new", postdata)
         
-        if (response.status == 204)
-            return res.sendStatus(201)
+        if (response.status == 200)
+            return res.sendStatus(200)
         else
             return res.sendStatus(500)
     }
