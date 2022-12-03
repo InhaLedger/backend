@@ -66,6 +66,10 @@ router.post('/searchsong', auth, async (req,res) => {
 router.get('/rank', auth, async (req,res) => {
     try {
         data = await query2('select s.*,IF (c.mysong=s.no, true, false) as alreadystar from (select (@rownum := @rownum+1) as rankidx,a.* from (select * from song order by star desc limit 100) as a, (select @rownum := 0 ) as b) as s left join (select * from cart where user=?) as c on s.no = c.mysong;',[uidx])
+        for (i = 0; i<data.length;i++){
+            data[i].highNote = Notelist[data[i].highNote]
+            data[i].lowNote = Notelist[data[i].lowNote]
+        }
         return res.send(data).status(200)
     }
     catch (err) {
