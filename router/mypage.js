@@ -169,5 +169,16 @@ router.get('/mycoin', auth, async (req,res) => {
 })
 
 
+router.get('/myproposal', auth, async (req,res) => {
+    try{
+        data = await query2('SELECT * FROM proposal WHERE proposal_userid=?',[uidx])
+        return res.status(200).send(data)
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
+
 
 module.exports = router

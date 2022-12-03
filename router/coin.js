@@ -103,7 +103,16 @@ router.post('/finalize', auth, async (req,res) => {
     // }
 })
 
-
+router.get('/adminproposal', auth, async (req,res) => {
+    try{
+        data = await query2('SELECT * FROM proposal',[])
+        return res.status(200).send(data)
+    }
+    catch (err) {
+        console.log(err)
+        return res.sendStatus(400)
+    }
+})
 
 router.post('/finduser', auth, async (req,res) => {
     try {

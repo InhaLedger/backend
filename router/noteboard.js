@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const db = require('../config/db')
 const util = require('util')
+const { default: axios } = require('axios')
 
 const router = express.Router()
 const {auth} = require('./auth')
@@ -20,10 +21,12 @@ for (i=0; i<9; i++) {
 
 router.get('/noteboard', auth, async (req,res) => {
     try {
-        data = await query2(`select n.*,s.title,s.singer,v.vote,vtable.already_vote from (select p.*,u.userid from noteboard as p left join user as u on p.note_writer = u.useridx) as n 
+        data = await query2(`select n.*,s.title,s.singer,v.upvote,v2.downvote,vtable.already_vote from (select p.*,u.userid from noteboard as p left join user as u on p.note_writer = u.useridx) as n 
         left join (select * from song) as s on n.note_no = s.no
-        left join (select boardidx,count(*) as vote from votetable where boardtype='note' group by boardidx) as v on v.boardidx = n.noteidx
-        left join (select boardidx,if(count(voteidx)!=0,true,false) as already_vote from votetable where boardtype='note' and voter=40 group by boardidx) as vtable on vtable.boardidx = n.noteidx`,[uidx])
+        left join (select boardidx,count(*) as upvote   from votetable where boardtype='note' and votetype='up' group by boardidx) as v on v.boardidx = n.noteidx
+        left join (select boardidx,count(*) as downvote from votetable where boardtype='note' and votetype='down' group by boardidx) as v2 on v2.boardidx = n.noteidx
+        left join (select boardidx,if(count(voteidx)!=0,true,false) as already_vote from votetable where boardtype='note' and voter=? group by boardidx) as vtable on vtable.boardidx = n.noteidx`
+        ,[uidx])
 
         for (i = 0; i<data.length;i++){
             data[i].highNote = Notelist[data[i].highNote]
@@ -41,7 +44,10 @@ router.get('/noteread', auth, async (req,res) => {
     const noteidx = req.query.noteidx
 
     try {
-        db.query('select p.*,u.userid as writerid from (select * from noteboard where noteidx=?) as p left join user as u on p.note_writer = u.useridx',[noteidx], async(err,data)=> {
+        db.query(`select p.*,u.userid,vtable.already_vote from (select * from noteboard where noteidx=?) as p 
+        left join user as u on p.note_writer = u.useridx
+		left join (select boardidx,if(count(voteidx)!=0,true,false) as already_vote from votetable where boardtype='note' and voter=? group by boardidx) as vtable on vtable.boardidx = p.noteidx`
+        ,[noteidx,uidx], async(err,data)=> {
             if(err){
                 console.log(err)
                 return res.sendStatus(400)
@@ -81,7 +87,8 @@ router.post('/notewrite', auth, async (req,res) => {
         const response = await axios.post("http://211.226.199.46/proposals",postdata)
 
         if (response.status == 200) {
-            const writeid = await query2('UPDATE noteboard SET note_proposalid=? WHERE noteidx=?',[response.data.id, noteidx])
+            const writePropose = await query2('INSERT INTO proposal(proposal_id,proposal_userid,proposal_timeStamp,proposal_type,proposal_boardidx,proposal_status) VALUES (?,?,?,?,?,?) ',
+            [response.data.id, response.data.userId,response.data.timeStamp,response.data.type,noteidx,response.data.status])
             return res.sendStatus(201)
         }
         else
@@ -96,9 +103,21 @@ router.post('/notewrite', auth, async (req,res) => {
 
 router.post('/notevote', auth, async (req,res) => {
     const noteidx = req.body.noteidx
+    const votetype = req.body.votetype
     try {
-        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx) VALUES(?,?,?)',[uidx,'note',noteidx])
-        return res.sendStatus(200)
+        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'note',noteidx,votetype])
+
+        get_proposal = await query2('SELECT * FROM proposal WHERE proposal_type = "noteboard" and proposal_boardidx=?',[noteidx])
+        proposalid = get_proposal[0]['proposal_id']
+
+        postdata = { "userId":uidx,"amounts":2.3, "timestamp":Date.now() ,"type":votetype }
+        const response = await axios.post("http://211.226.199.46/proposals/"+proposalid+"/noteboard/votes",postdata)
+
+        if (response.status == 200) {
+            return res.sendStatus(201)
+        }
+        else
+            return res.sendStatus(500)
     }
     catch (err) {
         console.log(err)

@@ -108,6 +108,22 @@ paths:
         '500':
           description: 블록체인 오류
 ####################################################################################
+  /myproposal:
+    get:
+      tags: 
+        - mypage.js
+      security:
+        - bearerAuth: []
+      summary: 내가 등록한 proposal
+      description:
+      responses:
+        '200':    
+          description: 성공
+        '400':
+          description: 실패
+        '401':
+          description: 토큰 인증 실패
+####################################################################################
   /showmynote:
     get:
       tags: 
@@ -382,8 +398,12 @@ paths:
               properties:
                 packidx:         
                   type: string
+                votetype:         
+                  type: string
+                  description: up or down
               required:
-                - packidx                                
+                - packidx    
+                - votetype                                  
       responses:
         '200':    
           description: 성공
@@ -491,8 +511,12 @@ paths:
               properties:
                 noteidx:         
                   type: string
+                votetype:         
+                  type: string
+                  description: up or down
               required:
-                - noteidx                                
+                - noteidx    
+                - votetype                            
       responses:
         '200':    
           description: 성공
@@ -617,8 +641,12 @@ paths:
               properties:
                 newidx:         
                   type: string
+                votetype:         
+                  type: string
+                  description: up or down
               required:
-                - newidx                                
+                - newidx    
+                - votetype                                  
       responses:
         '200':    
           description: 성공
@@ -743,8 +771,12 @@ paths:
               properties:
                 fixidx:         
                   type: string
+                votetype:         
+                  type: string
+                  description: up or down
               required:
-                - newidx                                
+                - fixidx    
+                - votetype                                 
       responses:
         '200':    
           description: 성공
