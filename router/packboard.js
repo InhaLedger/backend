@@ -65,7 +65,7 @@ router.post('/packwrite', auth, async (req,res) => {
 
     try {
         topidx = await query2('SELECT packidx FROM package ORDER BY 1 DESC LIMIT 1',[])
-        const packidx = parseInt(topidx[0]['packidx']) + 1
+        const packidx = topidx.length!=0 ? parseInt(topidx[0]['packidx']) + 1 : 1
 
 
         const doWrite = await query2('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',

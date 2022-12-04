@@ -72,7 +72,7 @@ router.post('/newwrite', auth, async (req,res) => {
 
     try {
         topidx = await query2('SELECT newidx FROM newboard ORDER BY 1 DESC LIMIT 1',[])
-        const newidx = parseInt(topidx[0]['newidx']) + 1
+        const newidx = topidx.length!=0 ? parseInt(topidx[0]['newidx']) + 1 : 1
 
         const doWrite = await query2('INSERT INTO newboard(new_boardtitle, new_boardcontent, new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
         [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])

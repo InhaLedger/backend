@@ -78,7 +78,7 @@ router.post('/notewrite', auth, async (req,res) => {
 
     try {
         topidx = await query2('SELECT noteidx FROM noteboard ORDER BY 1 DESC LIMIT 1',[])
-        const noteidx = parseInt(topidx[0]['noteidx']) + 1
+        const noteidx = topidx.length!=0 ? parseInt(topidx[0]['noteidx']) + 1 : 1
 
         const doWrite = await query2('INSERT INTO noteboard(note_writer,note_title,note_content,note_no,highNote,lowNote) VALUES (?,?,?,?,?,?)',
         [uidx,title,content,no,highidx,lowidx])
