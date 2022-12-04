@@ -974,12 +974,12 @@ paths:
           description: 블록체인 오류
 ####################################################################################
   /admin_finalize:
-    post:
+    get:
       tags: 
         - admin.js
       security:
         - bearerAuth: []
-      summary: 미구현 (마지막 과제)
+      summary: 지금까지 생성된 모든 proposal 정산
       description: 
       responses:
         '200':    
