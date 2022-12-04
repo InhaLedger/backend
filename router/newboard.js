@@ -74,13 +74,13 @@ router.post('/newwrite', auth, async (req,res) => {
         topidx = await query2('SELECT newidx FROM newboard ORDER BY 1 DESC LIMIT 1',[])
         const newidx = topidx.length!=0 ? parseInt(topidx[0]['newidx']) + 1 : 1
 
-        const doWrite = await query2('INSERT INTO newboard(new_boardtitle, new_boardcontent, new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])
-
         postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"newboard" }
         const response = await axios.post("http://211.226.199.46/proposals",postdata)
-
+        
         if (response.status == 200) {
+            const doWrite = await query2('INSERT INTO newboard(new_boardtitle, new_boardcontent, new_writer, new_no, new_title, new_singer, new_composer, new_lyricist, new_releasedate, new_album, new_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+            [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])
+
             const writePropose = await query2('INSERT INTO proposal(proposal_id,proposal_userid,proposal_timeStamp,proposal_type,proposal_boardidx,proposal_status) VALUES (?,?,?,?,?,?) ',
             [response.data.id, response.data.userId,response.data.timeStamp,response.data.type,newidx,response.data.status])
             return res.sendStatus(201)
@@ -99,15 +99,15 @@ router.post('/newvote', auth, async (req,res) => {
     const newidx = req.body.newidx
     const votetype = req.body.votetype
     try {
-        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'new',newidx,votetype])
         
         get_proposal = await query2('SELECT * FROM proposal WHERE proposal_type = "newboard" and proposal_boardidx=?',[newidx])
         proposalid = get_proposal[0]['proposal_id']
-
+        
         postdata = { "userId":uidx,"amounts":2.3, "timestamp":Date.now() ,"type":votetype }
         const response = await axios.post("http://211.226.199.46/proposals/"+proposalid+"/newboard/votes",postdata)
-
+        
         if (response.status == 200) {
+            do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'new',newidx,votetype])
             return res.sendStatus(201)
         }
         else

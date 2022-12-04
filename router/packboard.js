@@ -66,15 +66,14 @@ router.post('/packwrite', auth, async (req,res) => {
     try {
         topidx = await query2('SELECT packidx FROM package ORDER BY 1 DESC LIMIT 1',[])
         const packidx = topidx.length!=0 ? parseInt(topidx[0]['packidx']) + 1 : 1
-
-
-        const doWrite = await query2('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',
-        [uidx,packlist,title,content,packprice])
         
         postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"packboard" }
         const response = await axios.post("http://211.226.199.46/proposals",postdata)
-
+        
         if (response.status == 200) {
+            const doWrite = await query2('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',
+            [uidx,packlist,title,content,packprice])
+
             const writePropose = await query2('INSERT INTO proposal(proposal_id,proposal_userid,proposal_timeStamp,proposal_type,proposal_boardidx,proposal_status) VALUES (?,?,?,?,?,?) ',
             [response.data.id, response.data.userId,response.data.timeStamp,response.data.type,packidx,response.data.status])
             return res.sendStatus(201)
@@ -93,15 +92,15 @@ router.post('/packvote', auth, async (req,res) => {
     const packidx = req.body.packidx
     const votetype = req.body.votetype
     try {
-        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'pack',packidx,votetype])
-
+        
         get_proposal = await query2('SELECT * FROM proposal WHERE proposal_type = "packboard" and proposal_boardidx=?',[packidx])
         proposalid = get_proposal[0]['proposal_id']
-
+        
         postdata = { "userId":uidx,"amounts":2.3, "timestamp":Date.now() ,"type":votetype }
         const response = await axios.post("http://211.226.199.46/proposals/"+proposalid+"/packboard/votes",postdata)
-
+        
         if (response.status == 200) {
+            do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'pack',packidx,votetype])
             return res.sendStatus(201)
         }
         else

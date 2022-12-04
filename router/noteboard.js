@@ -79,14 +79,14 @@ router.post('/notewrite', auth, async (req,res) => {
     try {
         topidx = await query2('SELECT noteidx FROM noteboard ORDER BY 1 DESC LIMIT 1',[])
         const noteidx = topidx.length!=0 ? parseInt(topidx[0]['noteidx']) + 1 : 1
-
-        const doWrite = await query2('INSERT INTO noteboard(note_writer,note_title,note_content,note_no,highNote,lowNote) VALUES (?,?,?,?,?,?)',
-        [uidx,title,content,no,highidx,lowidx])
-
+        
         postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"noteboard" }
         const response = await axios.post("http://211.226.199.46/proposals",postdata)
-
+        
         if (response.status == 200) {
+            const doWrite = await query2('INSERT INTO noteboard(note_writer,note_title,note_content,note_no,highNote,lowNote) VALUES (?,?,?,?,?,?)',
+            [uidx,title,content,no,highidx,lowidx])
+
             const writePropose = await query2('INSERT INTO proposal(proposal_id,proposal_userid,proposal_timeStamp,proposal_type,proposal_boardidx,proposal_status) VALUES (?,?,?,?,?,?) ',
             [response.data.id, response.data.userId,response.data.timeStamp,response.data.type,noteidx,response.data.status])
             return res.sendStatus(201)
@@ -105,15 +105,15 @@ router.post('/notevote', auth, async (req,res) => {
     const noteidx = req.body.noteidx
     const votetype = req.body.votetype
     try {
-        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'note',noteidx,votetype])
-
+        
         get_proposal = await query2('SELECT * FROM proposal WHERE proposal_type = "noteboard" and proposal_boardidx=?',[noteidx])
         proposalid = get_proposal[0]['proposal_id']
-
+        
         postdata = { "userId":uidx,"amounts":2.3, "timestamp":Date.now() ,"type":votetype }
         const response = await axios.post("http://211.226.199.46/proposals/"+proposalid+"/noteboard/votes",postdata)
-
+        
         if (response.status == 200) {
+            do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'note',noteidx,votetype])
             return res.sendStatus(201)
         }
         else

@@ -74,19 +74,21 @@ router.post('/fixwrite', auth, async (req,res) => {
         topidx = await query2('SELECT fixidx FROM fixboard ORDER BY 1 DESC LIMIT 1',[])
         const fixidx = topidx.length!=0 ? parseInt(topidx[0]['fixidx']) + 1 : 1
 
-        const doWrite = await query2('INSERT INTO fixboard(fix_boardtitle, fix_boardcontent, fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])
-        
         postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"fixboard" }
         const response = await axios.post("http://211.226.199.46/proposals",postdata)
-
+        
         if (response.status == 200) {
+            const doWrite = await query2('INSERT INTO fixboard(fix_boardtitle, fix_boardcontent, fix_writer, fix_no, fix_title, fix_singer, fix_composer, fix_lyricist, fix_releasedate, fix_album, fix_imageurl) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+            [board_title,board_content, uidx,no,title,singer,composer,lyricist,releasedate,album,imageurl])
+
             const writePropose = await query2('INSERT INTO proposal(proposal_id,proposal_userid,proposal_timeStamp,proposal_type,proposal_boardidx,proposal_status) VALUES (?,?,?,?,?,?) ',
             [response.data.id, response.data.userId,response.data.timeStamp,response.data.type,fixidx,response.data.status])
             return res.sendStatus(201)
         }
-        else
+        else {
+
             return res.sendStatus(500)
+        }
     }
     catch (err) {
         console.log(err)
@@ -99,15 +101,15 @@ router.post('/fixvote', auth, async (req,res) => {
     const fixidx = req.body.fixidx
     const votetype = req.body.votetype
     try {
-        do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'fix',fixidx,votetype])
         
         get_proposal = await query2('SELECT * FROM proposal WHERE proposal_type = "fixboard" and proposal_boardidx=?',[fixidx])
         proposalid = get_proposal[0]['proposal_id']
-
+        
         postdata = { "userId":uidx,"amounts":2.3, "timestamp":Date.now() ,"type":votetype }
         const response = await axios.post("http://211.226.199.46/proposals/"+proposalid+"/fixboard/votes",postdata)
-
+        
         if (response.status == 200) {
+            do_vote = await query2('INSERT INTO votetable(voter,boardtype,boardidx,votetype) VALUES(?,?,?,?)',[uidx,'fix',fixidx,votetype])
             return res.sendStatus(201)
         }
         else
