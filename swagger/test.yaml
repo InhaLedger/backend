@@ -718,8 +718,6 @@ paths:
                   type: string
                 title:         
                   type: string
-                content:         
-                  type: string
                 singer:   
                   type: string
                 composer:   
@@ -738,7 +736,6 @@ paths:
                 - board_content
                 - no
                 - title
-                - content
                 - singer
                 - composer 
                 - lyricist

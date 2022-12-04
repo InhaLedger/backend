@@ -64,14 +64,16 @@ router.post('/join', async (req,res) => {
         bcrypt.hash(password, 8, async (err,encPassword) => {
             await query2('INSERT INTO user(userid,password) VALUES(?,?)', [userid,encPassword])
 
-            uidx = await query2('SELECT useridx FROM user WHERE userid = ?',[userid])
+            uidx = await query2('SELECT useridx FROM user WHERE userid = ? and password=?',[userid,encPassword])
             postdata = {"orgId":"Org1", "userId":uidx[0]['useridx']}
             const response = await axios.post("http://211.226.199.46/users", postdata)
             console.log(response)
             if (response.status == 204)
                 return res.sendStatus(201)
-            else
+            else {
+                await query2('DELETE FROM user WHERE userid = ? and password = ?',[userid,encPassword])
                 return res.sendStatus(500)
+            }
         })
     
     }
