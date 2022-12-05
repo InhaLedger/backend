@@ -115,7 +115,9 @@ router.get('/admin_finalize', auth, async (req,res) => {
         for (i = 0; i<prog_count; i++) {
             postdata = {"userId":"admin", "timestamp": Date.now(), "rewardPerProposal":20, "batchSize":1}
             const response = await axios.put("http://211.226.199.46/proposals", postdata)
-            if (response.status == 200 && Buffer.from(response.data, "base64").toString('utf-8')=='1') {
+            console.log(response)
+            console.log(Buffer.from(response.data, "base64").toString('utf-8'))
+            if (response.status == 200 ) { //&& Buffer.from(response.data, "base64").toString('utf-8')=='2'
                 const prop = await query2(`select * from proposal where proposal_status='PROGRESS' order by proposal_timeStamp limit 1`,[])
                 const propdone = await query2(`update proposal SET proposal_status='DONE' where proposal_id=?`,[prop[0]['proposal_id']])
 
