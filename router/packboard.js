@@ -21,7 +21,7 @@ for (i=0; i<9; i++) {
 
 router.get('/packboard', auth, async (req,res) => {
     try {
-        data = await query2(`select p.*,u.userid,v.upvote,v2.downvote,vtable.already_vote from package as p 
+        data = await query2(`select p.*,u.userid,v.upvote,v2.downvote,vtable.already_vote from packboard as p 
             left join user as u on p.packwriter = u.useridx
             left join (select boardidx,count(*) as upvote   from votetable where boardtype='pack' and votetype='up'   group by boardidx) as v  on v.boardidx  = p.packidx
             left join (select boardidx,count(*) as downvote from votetable where boardtype='pack' and votetype='down' group by boardidx) as v2 on v2.boardidx = p.packidx
@@ -39,7 +39,7 @@ router.get('/packread', auth, async (req,res) => {
     const packidx = req.query.packidx
 
     try {
-        db.query(`select p.*,u.userid, vtable.already_vote from (select * from package where packidx=?) as p 
+        db.query(`select p.*,u.userid, vtable.already_vote from (select * from packboard where packidx=?) as p 
         left join user as u on p.packwriter = u.useridx
         left join (select boardidx,if(count(voteidx)!=0,true,false) as already_vote from votetable where boardtype='pack' and voter=? group by boardidx) as vtable on vtable.boardidx = p.packidx`
         ,[packidx,uidx], async(err,data)=> {
@@ -64,14 +64,14 @@ router.post('/packwrite', auth, async (req,res) => {
     const packprice = req.body.packprice
 
     try {
-        topidx = await query2('SELECT packidx FROM package ORDER BY 1 DESC LIMIT 1',[])
+        topidx = await query2('SELECT packidx FROM packboard ORDER BY 1 DESC LIMIT 1',[])
         const packidx = topidx.length!=0 ? parseInt(topidx[0]['packidx']) + 1 : 1
         
         postdata = { "userId":uidx, "timestamp":Date.now() ,"type":"packboard" }
         const response = await axios.post("http://211.226.199.46/proposals",postdata)
         
         if (response.status == 200) {
-            const doWrite = await query2('INSERT INTO package(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',
+            const doWrite = await query2('INSERT INTO packboard(packwriter,packlist,packtitle,packcontent,packprice) VALUES (?,?,?,?,?)',
             [uidx,packlist,title,content,packprice])
 
             const writePropose = await query2('INSERT INTO proposal(proposal_id,proposal_userid,proposal_timeStamp,proposal_type,proposal_boardidx,proposal_status) VALUES (?,?,?,?,?,?) ',

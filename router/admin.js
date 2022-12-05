@@ -116,8 +116,45 @@ router.get('/admin_finalize', auth, async (req,res) => {
             postdata = {"userId":"admin", "timestamp": Date.now(), "rewardPerProposal":20, "batchSize":1}
             const response = await axios.put("http://211.226.199.46/proposals", postdata)
             if (response.status == 200 && atob(response.data)=='1') {
-                const propid = await query2(`select proposal_id from proposal where proposal_status='PROGRESS' order by proposal_timeStamp limit 1`,[])
-                const done = await query2(`update proposal SET proposal_status='DONE' where proposal_id=?`,[propid[0]['proposal_id']])
+                const prop = await query2(`select * from proposal where proposal_status='PROGRESS' order by proposal_timeStamp limit 1`,[])
+                const propdone = await query2(`update proposal SET proposal_status='DONE' where proposal_id=?`,[prop[0]['proposal_id']])
+
+                if (prop[0]['proposal_type'] == 'fixboard') {
+                    boarddata = await query2(`select * from fixboard where fixidx=?`,[prop[0]['proposal_boardidx']])
+                    rawup = await query2(`select count(*) as up from votetable where boardtype='fix' and boardidx=? and votetype='up'`,[prop[0]['proposal_boardidx']])
+                    rawdown = await query2(`select count(*) as down from votetable where boardtype='fix' and boardidx=? and votetype='down'`,[prop[0]['proposal_boardidx']])
+                    up = rawup[0]['up']
+                    down = rawup[0]['down']
+
+                    if (up > down) {
+                        fix_aciton = await query2(`UPDATE song SET title=?, singer=?, composer=?, lyricist=?, releasedate=?, album=?, imageurl=? where no=?`
+                        ,[boarddata[0]['fix_title'], boarddata[0]['fix_singer'], boarddata[0]['fix_composer'], boarddata[0]['fix_lyricist'], boarddata[0]['fix_releasedate'], boarddata[0]['fix_album'], boarddata[0]['fix_imageurl'], boarddata[0]['fix_no']])
+                    }
+                }
+                else if (prop[0]['proposal_type'] == 'newboard') {
+                    boarddata = await query2(`select * from newboard where newidx=?`,[prop[0]['proposal_boardidx']])
+                    rawup = await query2(`select count(*) as up from votetable where boardtype='new' and boardidx=? and votetype='up'`,[prop[0]['proposal_boardidx']])
+                    rawdown = await query2(`select count(*) as down from votetable where boardtype='new' and boardidx=? and votetype='down'`,[prop[0]['proposal_boardidx']])
+                    up = rawup[0]['up']
+                    down = rawup[0]['down']
+
+                    if (up > down) {
+                        new_action = await query2(`INSERT INTO song(no,brand,title,singer,composer,lyricist,releasedate,highNote,lowNote,album,imageurl) VALUES(?,'kumyoung',?,?,?,?,?,107,0,?,? )`
+                        ,[boarddata[0]['new_no'], boarddata[0]['new_title'], boarddata[0]['new_singer'], boarddata[0]['new_composer'], boarddata[0]['new_lyricist'], boarddata[0]['new_releasedate'], boarddata[0]['new_album'], boarddata[0]['new_imageurl']])
+                    }
+                }
+                else if (prop[0]['proposal_type'] == 'noteboard') {
+                    boarddata = await query2(`select * from noteboard where noteidx=?`,[prop[0]['proposal_boardidx']])
+                    rawup = await query2(`select count(*) as up from votetable where boardtype='note' and boardidx=? and votetype='up'`,[prop[0]['proposal_boardidx']])
+                    rawdown = await query2(`select count(*) as down from votetable where boardtype='note' and boardidx=? and votetype='down'`,[prop[0]['proposal_boardidx']])
+                    up = rawup[0]['up']
+                    down = rawup[0]['down']
+
+                    if (up > down) {
+                        new_action = await query2(`UPDATE song SET highNote=?, lowNote=? where no=?`
+                        ,[boarddata[0]['highNote'], boarddata[0]['lowNote'], boarddata[0]['note']])
+                    }
+                }
             }
             else
                 return res.sendStatus(500)
