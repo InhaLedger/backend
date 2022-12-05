@@ -129,6 +129,7 @@ router.get('/admin_finalize', auth, async (req,res) => {
                     if (up > down) {
                         fix_aciton = await query2(`UPDATE song SET title=?, singer=?, composer=?, lyricist=?, releasedate=?, album=?, imageurl=? where no=?`
                         ,[boarddata[0]['fix_title'], boarddata[0]['fix_singer'], boarddata[0]['fix_composer'], boarddata[0]['fix_lyricist'], boarddata[0]['fix_releasedate'], boarddata[0]['fix_album'], boarddata[0]['fix_imageurl'], boarddata[0]['fix_no']])
+                        console.log('fix fixed')
                     }
                 }
                 else if (prop[0]['proposal_type'] == 'newboard') {
@@ -141,18 +142,22 @@ router.get('/admin_finalize', auth, async (req,res) => {
                     if (up > down) {
                         new_action = await query2(`INSERT INTO song(no,brand,title,singer,composer,lyricist,releasedate,highNote,lowNote,album,imageurl) VALUES(?,'kumyoung',?,?,?,?,?,107,0,?,? )`
                         ,[boarddata[0]['new_no'], boarddata[0]['new_title'], boarddata[0]['new_singer'], boarddata[0]['new_composer'], boarddata[0]['new_lyricist'], boarddata[0]['new_releasedate'], boarddata[0]['new_album'], boarddata[0]['new_imageurl']])
+                        console.log('new fixed')
                     }
                 }
                 else if (prop[0]['proposal_type'] == 'noteboard') {
                     boarddata = await query2(`select * from noteboard where noteidx=?`,[prop[0]['proposal_boardidx']])
+                    console.log(boarddata)
                     rawup = await query2(`select count(*) as up from votetable where boardtype='note' and boardidx=? and votetype='up'`,[prop[0]['proposal_boardidx']])
                     rawdown = await query2(`select count(*) as down from votetable where boardtype='note' and boardidx=? and votetype='down'`,[prop[0]['proposal_boardidx']])
                     up = rawup[0]['up'] != undefined ? rawup[0]['up'] : 0
                     down = rawup[0]['down'] != undefined ? rawup[0]['down'] : 0
-
+                    console.log(up,down)
                     if (up > down) {
-                        new_action = await query2(`UPDATE song SET highNote=?, lowNote=? where no=?`
-                        ,[boarddata[0]['highNote'], boarddata[0]['lowNote'], boarddata[0]['note']])
+                        note_action = await query2(`UPDATE song SET highNote=?, lowNote=? where no=?`
+                        ,[boarddata[0]['highNote'], boarddata[0]['lowNote'], boarddata[0]['note_no']])
+                        console.log(note_action)
+                        console.log('note fixed')
                     }
                 }
             }
